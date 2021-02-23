@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Authorization</string>
+    <string name="password">Password</string>
+    <string name="login_btn">Log in</string>
+    <string name="input_login">login</string>
+    <string name="input_password">password</string>
+    <string name="textview">User</string>
+    <string name="wrong_input_textview">Wrong login or password</string>
+</resources>
