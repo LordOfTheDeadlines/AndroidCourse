@@ -2,18 +2,18 @@ package com.abramchuk.authorization
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.abramchuk.authorization.databinding.FragmentAuthorizationBinding
 
 
 class AuthorizationFragment : Fragment() {
+    private var binding: FragmentAuthorizationBinding?=null
     var navController: NavController?=null
     private var LOGIN: String? = "Admin"
     private var PASSWORD: String? = "admin@Huawei"
@@ -24,23 +24,23 @@ class AuthorizationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_authorization, container, false)
+        binding = FragmentAuthorizationBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        val inputUser = view.findViewById<EditText>(R.id.login_editText)
-        val inputPass = view.findViewById<EditText>(R.id.password_editText)
-        val loginButton =  view.findViewById<Button>(R.id.button)
+        val inputUser = binding?.loginEditText
+        val inputPass = binding?.passwordEditText
         val sharedPref = activity?.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE)
         val user = sharedPref?.getString(KEY_LOGIN, null)
         if(user!=null){
             navigateUserToGreetingFragment(user)
         }
-        loginButton.setOnClickListener{
-            val login = inputUser.text.toString()
-            val password = inputPass.text.toString()
+        binding?.button?.setOnClickListener{
+            val login = inputUser?.text.toString()
+            val password = inputPass?.text.toString()
             authorize(login, password)
         }
     }

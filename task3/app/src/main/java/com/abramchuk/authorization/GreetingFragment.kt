@@ -30,15 +30,15 @@ class GreetingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         val message = "Hello, $username"
-        view.findViewById<TextView>(R.id.username_textView).text = message
-        val nav_btn = view.findViewById<Button>(R.id.button_nav_to_group_generator_fragment)
-        val logout_btn = view.findViewById<Button>(R.id.button_logout)
-        nav_btn.setOnClickListener {
+        binding?.usernameTextView?.text = message
+        val nav_btn = binding?.buttonNavToGroupGeneratorFragment
+        val logout_btn = binding?.buttonLogout
+        nav_btn?.setOnClickListener {
             navController!!.navigate(
                 R.id.action_greetingFragment_to_groupGeneratorFragment
             )
         }
-        logout_btn.setOnClickListener {
+        logout_btn?.setOnClickListener {
             with (activity?.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE)?.edit()) {
                 this?.clear()
                 this?.apply()
@@ -53,6 +53,7 @@ class GreetingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_greeting, container, false)
+        binding = FragmentGreetingBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 }
