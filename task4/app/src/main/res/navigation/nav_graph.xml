@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/departmentsFragment">
+
+    <fragment
+        android:id="@+id/departmentsFragment"
+        android:name="com.abramchuk.task4.DepartmentsFragment"
+        android:label="fragment_departments"
+        tools:layout="@layout/fragment_departments" >
+        <action
+            android:id="@+id/action_departmentsFragment_to_artObjectsFragment"
+            app:destination="@id/artObjectsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/artObjectsFragment"
+        android:name="com.abramchuk.task4.ArtObjectsFragment"
+        android:label="fragment_art_objects"
+        tools:layout="@layout/fragment_art_objects" />
+</navigation>

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class DepartmentAdapter : RecyclerView.Adapter<DepartmentAdapter.DepartmentHolder>() {
+class DepartmentAdapter(var cellClickListener: DepartmentClickListener) : RecyclerView.Adapter<DepartmentAdapter.DepartmentHolder>() {
     var list = listOf<Department>()
 
     fun update(list: List<Department>) {
@@ -22,16 +22,17 @@ class DepartmentAdapter : RecyclerView.Adapter<DepartmentAdapter.DepartmentHolde
     override fun getItemCount(): Int = list.count()
 
     override fun onBindViewHolder(holder:DepartmentHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position],cellClickListener)
     }
 
     class DepartmentHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(item: Department) {
+        fun bind(item: Department, action: DepartmentClickListener) {
             view.setOnClickListener {
-
+                action.onCellClickListener(item, adapterPosition)
             }
-            val title = view.findViewById<TextView>(R.id.title)
+
+            val title = view.findViewById<TextView>(R.id.department_title)
             title.setOnClickListener {  }
             title.text = item.name
         }

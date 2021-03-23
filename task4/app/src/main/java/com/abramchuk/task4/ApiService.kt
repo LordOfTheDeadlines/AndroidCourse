@@ -5,12 +5,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface ApiService {
 
     @GET("objects/{id}")
     suspend fun getArtObject(@Path("id") id: Int) : Response<ArtObject>
+
+    @GET("/objects")
+    suspend fun getArtObjectsByDepartmentId(@Query("departmentIds") id: Int) : Response<ArtObjectsList>
 
     @GET("departments")
     suspend fun getDepartments() :  Response<DepartmentsList>
