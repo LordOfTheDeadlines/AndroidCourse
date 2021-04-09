@@ -1,32 +1,50 @@
 package com.abramchuk.it_bookstore.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.abramchuk.it_bookstore.BookAdapter
+import com.abramchuk.it_bookstore.BookClickListener
 import com.abramchuk.it_bookstore.R
+import com.abramchuk.it_bookstore.models.Book
+import com.abramchuk.it_bookstore.network.ApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [BooksFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class BooksFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class BooksFragment : Fragment(), BookClickListener {
+    var navController: NavController?=null
+    private lateinit var titleFragment: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        titleFragment = requireArguments().getString("title_fragment").toString()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
+        GlobalScope.launch(Dispatchers.IO) {
+            val listResponse = ApiService.instance().searchBooks(titleFragment,"1")
+
+            withContext(Dispatchers.Main) {
+                val books = listResponse.body()!!.books
+                Log.d("TEST_RESP", books.toString())
+                val rv = view.findViewById<RecyclerView>(R.id.listRv)
+                rv.layoutManager = LinearLayoutManager(context)
+                val adapter = BookAdapter(this@BooksFragment)
+                rv.adapter = adapter
+                adapter.update(books)
+            }
         }
     }
 
@@ -34,27 +52,14 @@ class BooksFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_books, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BooksFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BooksFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onCellClickListener(item: Book, position: Int) {
+        val bundle = bundleOf("book_id" to item.toString())
+        navController!!.navigate(
+            R.id.action_booksFragment_to_bookInfoFragment,
+            bundle
+        )
     }
 }
